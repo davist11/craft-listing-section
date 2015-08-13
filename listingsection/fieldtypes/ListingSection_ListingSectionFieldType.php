@@ -11,17 +11,17 @@ class ListingSection_ListingSectionFieldType extends BaseFieldType
 
 	public function getInputHtml($name, $value)
 	{
-		return craft()->templates->render('listingsection/select', array(
+		return craft()->templates->render('_includes/forms/select', array(
 			'name' => $name,
 			'value' => $value,
-			'options' => $this->_getSections()
+			'options' => array_merge(array(''), $this->_getSections())
 		));
 	}
 
 	private function _getSections()
 	{
 		$sections = craft()->db->createCommand()
-					->select('handle, name')
+					->select('handle as value, name as label')
 					->from('sections')
 					->order('name')
 					->queryAll();
