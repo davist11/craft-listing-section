@@ -1,0 +1,16 @@
+{% import "_includes/forms" as forms %}
+
+{% if sections %}
+	{{ forms.checkboxSelectField({
+		label: "Sections"|t,
+		instructions: "Which sections do you want to select?"|t,
+		id: 'sections',
+		name: 'sections',
+		options: sections,
+		values: settings.sections
+	})}}
+{% else %}
+	{{ forms.field({
+		label: "Sections"|t
+	}, '<p class="error">' ~ "No sections exist yet."|t ~ '</p>') }}
+{% endif %}

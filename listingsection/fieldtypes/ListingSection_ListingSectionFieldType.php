@@ -14,18 +14,37 @@ class ListingSection_ListingSectionFieldType extends BaseFieldType
 		return craft()->templates->render('_includes/forms/select', array(
 			'name' => $name,
 			'value' => $value,
-			'options' => array_merge(array(''), $this->_getSections())
+			'options' => $this->_getSections($this->getSettings()->sections != '*')
 		));
 	}
 
-	private function _getSections()
+	public function getSettingsHtml()
+	{
+		return craft()->templates->render('listingsection/fieldsettings', array(
+			'sections' => $this->_getSections(),
+			'settings' => $this->getSettings()
+		));
+	}
+
+	protected function defineSettings()
+	{
+		return array(
+			'sections' => AttributeType::Mixed
+		);
+	}
+
+	private function _getSections($filtered = false)
 	{
 		$sections = craft()->db->createCommand()
 					->select('handle as value, name as label')
 					->from('sections')
-					->order('name')
-					->queryAll();
+					->order('name');
 
-		return $sections;
+		if($filtered)
+		{
+			$sections = $sections->where(array('in', 'handle', $this->getSettings()->sections));
+		}
+
+		return $sections->queryAll();
 	}
 }
